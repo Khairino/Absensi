@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS data_wajah (
     id_wajah INTEGER PRIMARY KEY AUTOINCREMENT,
     id_siswa INTEGER NOT NULL,
     face_template BLOB NOT NULL,
-    tanggal_daftar DATE NOT NULL DEFAULT (DATE('now')),
+    tanggal_daftar DATE NOT NULL DEFAULT (DATE('now', 'localtime')),
     FOREIGN KEY (id_siswa) REFERENCES siswa(id_siswa) ON DELETE CASCADE
 );
 
@@ -162,7 +162,7 @@ def catat_absensi(id_siswa, metode, id_petugas=None, status_kehadiran="Hadir"):
         try:
             cur = conn.execute(
                 """INSERT INTO absensi (id_siswa, tanggal, jam_masuk, metode, status_kehadiran, id_petugas)
-                   VALUES (?, DATE('now'), TIME('now', 'localtime'), ?, ?, ?)""",
+                   VALUES (?, DATE('now', 'localtime'), TIME('now', 'localtime'), ?, ?, ?)""",
                 (id_siswa, metode, status_kehadiran, id_petugas),
             )
         except sqlite3.IntegrityError:
@@ -175,7 +175,7 @@ def get_absensi_hari_ini():
         rows = conn.execute(
             """SELECT a.*, s.nis, s.nama_lengkap, s.kelas
                FROM absensi a JOIN siswa s ON s.id_siswa = a.id_siswa
-               WHERE a.tanggal = DATE('now')
+               WHERE a.tanggal = DATE('now', 'localtime')
                ORDER BY a.jam_masuk DESC"""
         ).fetchall()
     return [dict(r) for r in rows]

@@ -1,3 +1,13 @@
+// Firmware pembaca RFID untuk ESP32 DevKit V1 30-pin + RC522 (MFRC522).
+// Wiring (semua pin RC522 ke deretan KANAN ESP32, USB Micro USB di bawah):
+//   RC522 SDA  -> D5   (GPIO5)   | RC522 RST  -> D22 (GPIO22)
+//   RC522 SCK  -> D18  (GPIO18)  | RC522 3.3V -> 3V3 (JANGAN 5V/VIN)
+//   RC522 MOSI -> D23  (GPIO23)  | RC522 GND  -> GND
+//   RC522 MISO -> D19  (GPIO19)  | RC522 IRQ  -> tidak dicolok
+// Output: hanya UID hex huruf besar, satu baris, 115200 baud (contoh: 3A257283).
+// Flask (serial_listener.py) membaca baris itu dan memasukkannya ke antrean
+// yang sama dengan Simulasi Tap. Jangan buka Serial Monitor saat Flask jalan,
+// karena keduanya rebutan port COM yang sama.
 #include <SPI.h>
 #include <MFRC522.h>
 
